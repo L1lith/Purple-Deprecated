@@ -6,6 +6,10 @@ const args = validateArgs({
   "directory": {
     aliases: ["d", "dir"],
     sanitize: String
+  },
+  "port": {
+    aliases: ["p"],
+    sanitize: Number
   }
 })
 

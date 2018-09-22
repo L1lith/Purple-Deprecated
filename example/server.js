@@ -1,3 +1,3 @@
 module.exports = server => {
-  console.log(server)
+  console.log("Server Hook Called")
 }
