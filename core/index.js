@@ -1,7 +1,8 @@
 const {join} = require('path')
+const createServer = require('./createServer')
 
-function runPurpl(dirname, args) {
-  
+async function runPurpl(directory, args) {
+  const app = await createServer(directory)
 }
 
 module.exports = runPurpl

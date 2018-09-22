@@ -1,6 +1,5 @@
 const core = require('../../core')
 const validateArgs = require('../validateArgs')
-const {access} = require('fs-extra')
 const {dirname, join} = require('path')
 
 const args = validateArgs({
@@ -20,4 +19,7 @@ try {
 }
 options = {...options, ...args}
 
-core(directory, options)
+core(directory, options).catch(err => {
+  console.log(err)
+  process.exit(1)
+})
