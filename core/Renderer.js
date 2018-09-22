@@ -19,8 +19,10 @@ class Renderer {
   }
   async render(path) {
     const ext = extname(path) || null
-    if (ext && !['html', 'jsp'].includes(ext)) return null
-    const match = matchPath(path, ext)
+    if (ext && !['html', 'jsp'].includes(ext)) return null // We don't handle other file extensions
+    if (ext === 'html') ext = null // We need both JS and HTML matches for HTML rendering
+    const matches = matchPath(path, ext)
+
   }
   // async renderHTML(path) {
   //   const fullHTMLPath = this.matchPath(path, 'html')
