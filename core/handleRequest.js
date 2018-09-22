@@ -12,6 +12,7 @@ function handleRequest(directory) {
     const ext = extname(path) || ".html"
     path = removeExtensionFromPath(path)
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
+    if (ext === '.jsp') ext = '.js' // Convert JSP (JavaScript Page) to actual JS extension
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     const rawResponse = await renderer.render(path, ext)
     if (rawResponse === null) return next()
