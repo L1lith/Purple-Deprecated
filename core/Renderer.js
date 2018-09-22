@@ -4,7 +4,6 @@ const {join, extname} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
-const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
 class Renderer {
   constructor(directory) {
@@ -17,12 +16,10 @@ class Renderer {
     }
     autoBind(this)
   }
-  async render(path) {
-    const ext = extname(path) || null
-    if (ext && !['html', 'jsp'].includes(ext)) return null // We don't handle other file extensions
+  async render(path, ext) {
     if (ext === 'html') ext = null // We need both JS and HTML matches for HTML rendering
     const matches = matchPath(path, ext)
-
+    
   }
   // async renderHTML(path) {
   //   const fullHTMLPath = this.matchPath(path, 'html')
@@ -48,8 +45,8 @@ class Renderer {
     const matches = []
     for (let i = 0; i < this.pageMap.length; i++) {
       const [regex, full, ext] = this.pageMap[i]
-      if (regex.test(path)) {
-        if (!type || type === ext) {
+      if (!type || type === ext) {
+        if (regex.test(path)) {
           matches.push([full, ext])
         }
       }
