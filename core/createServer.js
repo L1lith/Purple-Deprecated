@@ -6,17 +6,15 @@ const handleRequest = require('./handleRequest')
 
 async function createServer(directory) {
   const app = express()
-  const cacheDir = join(directory, 'cache')
   app.disable('x-powered-by')
-  mkdirp(cacheDir)
-  app.use(express.static(cacheDir))
-  const staticDir = join(directory, 'static')
   try {
     await access(staticDir)
     app.use(express.static(staticDir))
-  } catch(err) {
-
-  }
+  } catch(err) {}
+  const cacheDir = join(directory, 'cache')
+  mkdirp(cacheDir)
+  app.use(express.static(cacheDir))
+  const staticDir = join(directory, 'static')
   app.use(handleRequest(directory))
 
   let serverHookPath = null
