@@ -24,21 +24,25 @@ class Renderer {
     const matches = this.matchPath(path, ext).sort(routeOrder())
     if (!matches.length < 1) return null
     if (!ext || ext === '.html') {
-      const htmlMatch = matches.filter(page => page[1] === '.html')[0]
-      if (!htmlMatch) {
-        if (!ext) {
-          return this.renderJS(matches, path, ext)
-        } else {
-          return null
-        }
-      }
+      return this.renderHTML(matches, path, ext)
     } else if (ext === '.js') {
       return this.renderJS(matches, path, ext)
     } else {
       throw new Error(`Unexpected Extension ${ext}`)
     }
-    const rawHTML = await readFile(htmlMatch[0])
     //return [rawHTML, '.html']
+  }
+  async renderHTML(matches, path, ext) {
+    const htmlMatch = matches.filter(page => page[1] === '.html')[0]
+    if (!htmlMatch) {
+      if (!ext) {
+        return this.renderJS(matches, path, ext)
+      } else {
+        return null
+      }
+    }
+    const rawHTML = await readFile(htmlMatch[0])
+    
   }
   async renderJS(matches) {
 
