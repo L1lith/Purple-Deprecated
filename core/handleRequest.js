@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler')
 const mkdirp = require('mkdirp')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
-const replaceIndexRegex = /(?<=(^|\/))(?=[\.[a-zA-Z]+]{0,}$)/
+const replaceIndexRegex = /(?<=(^|\/))(?=\.[a-zA-Z]+$)/
 
 function handleRequest(directory) {
   const renderer = new Renderer(directory)

@@ -44,7 +44,9 @@ class Renderer {
       }
     }
     const rawHTML = await readFile(htmlMatch[0])
-    return [rawHTML, '.html']
+    const jsToRender = matches.filter(page => page[1] === '.js')
+    if (jsToRender.length < 1) return [rawHTML, '.html']
+    
   }
   async renderJS(matches) {
 
