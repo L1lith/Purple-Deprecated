@@ -3,14 +3,14 @@ const Renderer = require("./Renderer")
 
 function handleRequest(directory) {
   const renderer = new Renderer(directory)
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const path = url.parse(req.url).pathname
     if (req.accepts('text/html') || path.endsWith('.html')) {
-      const rawHTML = renderer.renderHTML(path)
+      const rawHTML = await renderer.renderHTML(path)
       if (rawHTML === null) return next()
       res.set('Content-Type', 'text/html').send(rawHTML)
     } else if (path.endswith('.jsp')) {
-      const rawJS = renderer.renderJS(path)
+      const rawJS = await renderer.renderJS(path)
       if (rawJS === null) return next()
       res.set('Content-Type', 'application/json').send(rawJS)
     }

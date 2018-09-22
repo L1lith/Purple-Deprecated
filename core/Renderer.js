@@ -2,6 +2,7 @@ const {join} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
+const {readFile} = require('fs-extra')
 
 class Renderer {
   constructor(directory) {
@@ -17,17 +18,19 @@ class Renderer {
     this.renderJS = this.renderJS.bind(this)
     this.matchPath = this.matchPath.bind(this)
   }
-  renderHTML(path) {
-    const {directory} = this
-    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
-    const rawHTML = this.matchPath(path, 'html')
-    if (rawHTML === null) return null
+  async renderHTML(path) {
+    const fullPath = this.matchPath(path, 'html')
+    if (fullPath === null) return null
+    const rawHTML = (await readFile(fullPath)).toString()
     
   }
-  renderJS() {
+  async renderJS() {
+    const fullPath = this.matchPath(path, 'html')
+    if (fullPath === null) return null
 
   }
   matchPath(path, type) {
+    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string' || path.length < 1) throw new Error("Invalid Path")
     if (typeof type != 'string' || !this.pageMap.hasOwnProperty(type)) throw new Error("Unexpected or missing type")
     const tests = this.pageMap[type]
