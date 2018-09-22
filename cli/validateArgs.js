@@ -3,7 +3,7 @@ const whitelistedArgs = ["_", '$0']
 
 function validateArgs(allowedArguments) {
   const args = require('yargs').argv
-  console.log(args)
+  const output = {_: args._}
 
   const aliasMap = {}
 
@@ -17,9 +17,14 @@ function validateArgs(allowedArguments) {
     if (!allowedArguments.hasOwnProperty(arg)) throw new Error(`Invalid Argument "${arg}"`)
     const argumentDescription = allowedArguments[arg]
     if (argumentDescription.hasOwnProperty("sanitize")) sanitize(value, argumentDescription.sanitize)
+    output[arg] = value
   })
 
-  return args
+  Object.entries(allowedArguments).forEach(([arg, {required=false}]) => {
+    if (required === true && !args.hasOwnProperty(arg)) throw new Error(`Missing "${arg}" Argument`)
+  })
+
+  return output
 }
 
 module.exports = validateArgs
