@@ -22,7 +22,7 @@ class Renderer {
   async render(path, ext) {
     if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
     const matches = this.matchPath(path, ext).sort(routeOrder())
-    if (!matches) return null
+    if (!matches.length < 1) return null
     const htmlMatch = matches.filter(page => page[1] === '.html')[0]
     if (!htmlMatch) return renderJS(matches, path, ext)
     const rawHTML = await readFile(htmlMatch[0])
@@ -45,7 +45,6 @@ class Renderer {
         }
       }
     }
-    if (matches.length < 1) return null
     return matches
   }
 }
