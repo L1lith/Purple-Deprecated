@@ -3,7 +3,7 @@ const whitelistedArgs = ["_", '$0']
 
 function validateArgs(allowedArguments) {
   const args = require('yargs').argv
-  const output = {_: args._}
+  const output = {_: args._.slice(1)}
 
   const aliasMap = {}
 
