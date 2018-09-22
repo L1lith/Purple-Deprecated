@@ -2,12 +2,15 @@ const express = require('express')
 const mkdirp = require('mkdirp')
 const {join} = require('path')
 const {access} = require('fs-extra')
+const handleRequest = require('./handleRequest')
 
 async function createServer(directory) {
   const app = express()
   const cacheDir = join(directory, 'cache')
+  app.disable('x-powered-by')
   mkdirp(cacheDir)
   app.use(express.static(cacheDir))
+  app.use(handleRequest(directory))
 
   let serverHookPath = null
   try {
