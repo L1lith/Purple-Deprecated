@@ -17,7 +17,7 @@ function handleRequest(directory) {
     const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
     if (rawResponse === null) return next()
     res.type('html').send(rawResponse)
-    writeFile(join(directory, 'cache', path+foundType), rawResponse, err => {
+    writeFile(join(directory, 'cache', (path || "index.html")+foundType), rawResponse, err => {
       if (err) console.log(err)
     })
   })

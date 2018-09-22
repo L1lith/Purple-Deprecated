@@ -52,7 +52,7 @@ class Renderer {
   matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
-    if (typeof path != 'string' || path.length < 1) throw new Error("Invalid Path")
+    if (typeof path != 'string') throw new Error("Invalid Path")
     if (targetExt !== null && typeof targetExt != 'string') throw new Error("Unexpected or missing type")
     const matches = []
     for (let i = 0; i < this.pageMap.length; i++) {
