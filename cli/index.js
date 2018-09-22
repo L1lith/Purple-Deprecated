@@ -5,4 +5,8 @@ const {sanitize, F} = require('sandhands')
 if (!command) throw new Error("Missing Command Argument!")
 sanitize(command, F(String).regex(/^[a-zA-Z]+$/))
 
-require('./commands/'+command+".js")
+try {
+  require('./commands/'+command+".js")
+} catch(err) {
+  throw new Error(`The command ${command} does not exist. Try "purpl help"`)
+}
