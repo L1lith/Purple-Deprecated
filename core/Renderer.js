@@ -20,9 +20,11 @@ class Renderer {
     autoBind(this)
   }
   async render(path, ext) {
+    if (path.startsWith('/')) path = path.substring(1)
     if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
     const matches = this.matchPath(path, ext).sort(routeOrder())
-    if (!matches.length < 1) return null
+
+    if (matches.length < 1) return null
     if (!ext || ext === '.html') {
       return this.renderHTML(matches, path, ext)
     } else if (ext === '.js') {
@@ -42,7 +44,7 @@ class Renderer {
       }
     }
     const rawHTML = await readFile(htmlMatch[0])
-    
+    return [rawHTML, '.html']
   }
   async renderJS(matches) {
 
