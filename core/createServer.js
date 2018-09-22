@@ -22,7 +22,7 @@ async function createServer(directory) {
   if (serverHookPath) {
     let serverHook = require(serverHookPath)
     if (typeof serverHook != 'function') throw new Error("Server Hook Must Export a Function!")
-    serverHook(app)
+    await serverHook(app)
   }
 
   return app
