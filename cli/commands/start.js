@@ -12,4 +12,12 @@ const args = validateArgs({
 
 const directory = args.directory || process.cwd()
 
-core(directory, args)
+let options = {}
+try {
+  options = require(join(dirname, "package.json")).purpl || {}
+} catch(err) {
+  console.warn("Warning: Package.json not found in target directory.")
+}
+options = {...options, ...args}
+
+core(directory, options)
