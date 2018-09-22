@@ -1,7 +1,7 @@
 const url = require('url')
 const Renderer = require("./Renderer")
 const {writeFile} = require('fs')
-const {join} = require('path')
+const {join, extname} = require('path')
 const asyncHandler = require('express-async-handler')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
@@ -9,12 +9,13 @@ function handleRequest(directory) {
   const renderer = new Renderer(directory)
   return asyncHandler(async (req, res, next) => {
     let path = url.parse(req.url).pathname
-    const ext = extname(path) || "html"
-    if (ext && !['html', 'jsp'].includes(ext)) return next() // We don't handle other file extensions
+    const ext = extname(path) || ".html"
+    path = removeExtensionFromPath(path)
+    if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     const rawResponse = await renderer.render(path, ext)
     if (rawResponse === null) return next()
-    fs.writeFile(join(directory, 'cache', removeExtensionFromPath(path)+"."+ext), rawResponse, err => {
+    writeFile(join(directory, 'cache', path+ext), rawResponse, err => {
       if (err) console.log(err)
     })
   })

@@ -4,11 +4,13 @@ const {join, extname} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
+const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
 class Renderer {
   constructor(directory) {
     this.rootDirectory = directory
     this.directory = join(directory, 'pages')
+    this.pageMap = createPageMap(this.directory)
     try {
       accessSync(this.directory)
     } catch(err) {
@@ -17,9 +19,8 @@ class Renderer {
     autoBind(this)
   }
   async render(path, ext) {
-    if (ext === 'html') ext = null // We need both JS and HTML matches for HTML rendering
-    const matches = matchPath(path, ext)
-    
+    if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
+    const matches = this.matchPath(path, ext)
   }
   // async renderHTML(path) {
   //   const fullHTMLPath = this.matchPath(path, 'html')
@@ -37,15 +38,15 @@ class Renderer {
   //   if (fullJSPath === null) return rawHTML
   //   return rawHTML
   // }
-  matchPath(path, type=null) {
+  matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string' || path.length < 1) throw new Error("Invalid Path")
-    if (type !== null && typeof type != 'string') throw new Error("Unexpected or missing type")
+    if (targetExt !== null && typeof targetExt != 'string') throw new Error("Unexpected or missing type")
     const matches = []
     for (let i = 0; i < this.pageMap.length; i++) {
       const [regex, full, ext] = this.pageMap[i]
-      if (!type || type === ext) {
+      if (targetExt === null || targetExt === ext) {
         if (regex.test(path)) {
           matches.push([full, ext])
         }
