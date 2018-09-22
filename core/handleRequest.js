@@ -6,9 +6,13 @@ function handleRequest(directory) {
   return (req, res, next) => {
     const path = url.parse(req.url).pathname
     if (req.accepts('text/html') || path.endsWith('.html')) {
-      res.set('Content-Type', 'text/html').send(renderer.renderHTML(path))
+      const rawHTML = renderer.renderHTML(path)
+      if (rawHTML === null) return next()
+      res.set('Content-Type', 'text/html').send(rawHTML)
     } else if (path.endswith('.jsp')) {
-      res.set('Content-Type', 'application/json').send(renderer.renderJS(path))
+      const rawJS = renderer.renderJS(path)
+      if (rawJS === null) return next()
+      res.set('Content-Type', 'application/json').send(rawJS)
     }
   }
 }
