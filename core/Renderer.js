@@ -1,8 +1,9 @@
-const {join} = require('path')
+const autoBind = require('auto-bind')
+const {readFile, readFileSync} = require('fs-extra')
+const {join, extname} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
-const {readFile, readFileSync} = require('fs-extra')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
 class Renderer {
@@ -14,43 +15,45 @@ class Renderer {
     } catch(err) {
       throw new Error("Missing /pages Directory")
     }
-    this.pageMap = createPageMap(this.directory)
-    this.renderHTML = this.renderHTML.bind(this)
-    this.renderJS = this.renderJS.bind(this)
-    this.matchPath = this.matchPath.bind(this)
+    autoBind(this)
   }
-  async renderHTML(path) {
-    const fullHTMLPath = this.matchPath(path, 'html')
-    let rawHTML
-    if (fullHTMLPath === null) {
-      if (this.standardHTML) {
-        rawHTML = this.standardHTML
-      } else {
-        rawHTML = null
-      }
-    } else {
-      rawHTML = await readFile(fullHTMLPath)
-    }
-    const fullJSPath = this.matchPath(path, 'js')
-    if (fullJSPath === null) return rawHTML
-    return rawHTML
+  async render(path) {
+    const ext = extname(path) || null
+    if (ext && !['html', 'jsp'].includes(ext)) return null
+    const match = matchPath(path, ext)
   }
-  async renderJS() {
-    const fullPath = this.matchPath(path, 'html')
-    if (fullPath === null) return null
-
-  }
-  matchPath(path, type) {
+  // async renderHTML(path) {
+  //   const fullHTMLPath = this.matchPath(path, 'html')
+  //   let rawHTML
+  //   if (fullHTMLPath === null) {
+  //     if (this.standardHTML) {
+  //       rawHTML = this.standardHTML
+  //     } else {
+  //       rawHTML = null
+  //     }
+  //   } else {
+  //     rawHTML = await readFile(fullHTMLPath)
+  //   }
+  //   const fullJSPath = this.matchPath(path, 'js')
+  //   if (fullJSPath === null) return rawHTML
+  //   return rawHTML
+  // }
+  matchPath(path, type=null) {
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string' || path.length < 1) throw new Error("Invalid Path")
-    if (typeof type != 'string' || !this.pageMap.hasOwnProperty(type)) throw new Error("Unexpected or missing type")
-    const tests = this.pageMap[type]
-    for (let i = 0; i < tests.length; i++) {
-      const [regex] = tests[i]
-      if (regex.test(path)) return tests[i][1]
+    if (type !== null && typeof type != 'string') throw new Error("Unexpected or missing type")
+    const matches = []
+    for (let i = 0; i < this.pageMap.length; i++) {
+      const [regex, full, ext] = this.pageMap[i]
+      if (regex.test(path)) {
+        if (!type || type === ext) {
+          matches.push([full, ext])
+        }
+      }
     }
-    return null
+    if (matches.length < 1) return null
+    return matches
   }
 }
 

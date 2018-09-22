@@ -32,7 +32,9 @@
   },
   "homepage": "https://github.com/L1lith/Purpl#readme",
   "dependencies": {
+    "auto-bind": "^1.2.1",
     "express": "^4.16.3",
+    "express-async-handler": "^1.1.4",
     "fs-extra": "^7.0.0",
     "mkdirp": "^0.5.1",
     "node-dir": "^0.1.17",
