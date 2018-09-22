@@ -20,17 +20,19 @@ class Renderer {
     this.matchPath = this.matchPath.bind(this)
   }
   async renderHTML(path) {
-    const fullPath = this.matchPath(path, 'html')
+    const fullHTMLPath = this.matchPath(path, 'html')
     let rawHTML
-    if (fullPath === null) {
+    if (fullHTMLPath === null) {
       if (this.standardHTML) {
         rawHTML = this.standardHTML
       } else {
         rawHTML = null
       }
     } else {
-      rawHTML = await readFile(fullPath)
+      rawHTML = await readFile(fullHTMLPath)
     }
+    const fullJSPath = this.matchPath(path, 'js')
+    if (fullJSPath === null) return rawHTML
     return rawHTML
   }
   async renderJS() {
