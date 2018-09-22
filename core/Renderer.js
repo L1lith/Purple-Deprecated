@@ -2,7 +2,8 @@ const {join} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
-const {readFile} = require('fs-extra')
+const {readFile, readFileSync} = require('fs-extra')
+const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 
 class Renderer {
   constructor(directory) {
@@ -20,9 +21,17 @@ class Renderer {
   }
   async renderHTML(path) {
     const fullPath = this.matchPath(path, 'html')
-    if (fullPath === null) return null
-    const rawHTML = (await readFile(fullPath)).toString()
-    
+    let rawHTML
+    if (fullPath === null) {
+      if (this.standardHTML) {
+        rawHTML = this.standardHTML
+      } else {
+        rawHTML = null
+      }
+    } else {
+      rawHTML = await readFile(fullPath)
+    }
+    return rawHTML
   }
   async renderJS() {
     const fullPath = this.matchPath(path, 'html')
@@ -30,6 +39,7 @@ class Renderer {
 
   }
   matchPath(path, type) {
+    path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string' || path.length < 1) throw new Error("Invalid Path")
     if (typeof type != 'string' || !this.pageMap.hasOwnProperty(type)) throw new Error("Unexpected or missing type")
