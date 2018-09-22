@@ -24,9 +24,15 @@
   ],
   "author": "L1lith",
   "license": "MIT",
-  "bin": { "purpl": "./cli/index.js" },
+  "bin": {
+    "purpl": "./cli/index.js"
+  },
   "bugs": {
     "url": "https://github.com/L1lith/Purpl/issues"
   },
-  "homepage": "https://github.com/L1lith/Purpl#readme"
+  "homepage": "https://github.com/L1lith/Purpl#readme",
+  "dependencies": {
+    "sandhands": "^1.3.65",
+    "yargs": "^12.0.2"
+  }
 }
