@@ -1,0 +1,14 @@
+{
+  "name": "example-purpl-project",
+  "version": "1.0.0",
+  "description": "Used for tutorials and development",
+  "main": "home.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "L1lith",
+  "license": "MIT"
+}
