@@ -5,6 +5,7 @@ const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
+const routeOrder = require('route-order')
 
 class Renderer {
   constructor(directory) {
@@ -20,24 +21,16 @@ class Renderer {
   }
   async render(path, ext) {
     if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
-    const matches = this.matchPath(path, ext)
+    const matches = this.matchPath(path, ext).sort(routeOrder())
+    if (!matches) return null
+    const htmlMatch = matches.filter(page => page[1] === '.html')[0]
+    if (!htmlMatch) return renderJS(matches, path, ext)
+    const rawHTML = await readFile(htmlMatch[0])
+    //return [rawHTML, '.html']
   }
-  // async renderHTML(path) {
-  //   const fullHTMLPath = this.matchPath(path, 'html')
-  //   let rawHTML
-  //   if (fullHTMLPath === null) {
-  //     if (this.standardHTML) {
-  //       rawHTML = this.standardHTML
-  //     } else {
-  //       rawHTML = null
-  //     }
-  //   } else {
-  //     rawHTML = await readFile(fullHTMLPath)
-  //   }
-  //   const fullJSPath = this.matchPath(path, 'js')
-  //   if (fullJSPath === null) return rawHTML
-  //   return rawHTML
-  // }
+  async renderJS(matches) {
+
+  }
   matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")

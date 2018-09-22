@@ -14,9 +14,10 @@ function handleRequest(directory) {
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
     if (ext === '.jsp') ext = '.js' // Convert JSP (JavaScript Page) to actual JS extension
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
-    const rawResponse = await renderer.render(path, ext)
+    const [rawResponse, foundType] = await renderer.render(path, ext)
     if (rawResponse === null) return next()
-    writeFile(join(directory, 'cache', path+ext), rawResponse, err => {
+    res.type('html').send(rawResponse)
+    writeFile(join(directory, 'cache', path+foundType), rawResponse, err => {
       if (err) console.log(err)
     })
   })
