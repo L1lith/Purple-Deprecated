@@ -1,9 +1,12 @@
 const url = require('url')
 const Renderer = require("./Renderer")
 const {writeFile} = require('fs')
-const {join, extname} = require('path')
+const {join, extname, dirname} = require('path')
 const asyncHandler = require('express-async-handler')
+const mkdirp = require('mkdirp')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
+
+const replaceIndexRegex = /(?<=(^|\/))(?=[\.[a-zA-Z]+]{0,}$)/
 
 function handleRequest(directory) {
   const renderer = new Renderer(directory)
@@ -17,8 +20,12 @@ function handleRequest(directory) {
     const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
     if (rawResponse === null) return next()
     res.type('html').send(rawResponse)
-    writeFile(join(directory, 'cache', (path || "index.html")+foundType), rawResponse, err => {
-      if (err) console.log(err)
+    const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
+    mkdirp(dirname(responsePath), err => {
+      if (err) return console.log(err)
+      writeFile(responsePath, rawResponse, err => {
+        if (err) console.log(err)
+      })
     })
   })
 }
