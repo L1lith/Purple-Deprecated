@@ -10,6 +10,13 @@ async function createServer(directory) {
   app.disable('x-powered-by')
   mkdirp(cacheDir)
   app.use(express.static(cacheDir))
+  const staticDir = join(directory, 'static')
+  try {
+    await access(staticDir)
+    app.use(express.static(staticDir))
+  } catch(err) {
+
+  }
   app.use(handleRequest(directory))
 
   let serverHookPath = null
