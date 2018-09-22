@@ -16,10 +16,10 @@ function handleRequest(directory) {
     path = removeExtensionFromPath(path)
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
     if (ext === '.jsp') ext = '.js' // Convert JSP (JavaScript Page) to actual JS extension
-    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
+    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character(s)")
     const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
     if (rawResponse === null) return next()
-    res.type('html').send(rawResponse)
+    res.type(foundType).send(rawResponse)
     const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
     mkdirp(dirname(responsePath), err => {
       if (err) return console.log(err)
