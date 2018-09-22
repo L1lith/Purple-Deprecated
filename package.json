@@ -24,6 +24,7 @@
   ],
   "author": "L1lith",
   "license": "MIT",
+  "bin": { "purpl": "./cli/index.js" },
   "bugs": {
     "url": "https://github.com/L1lith/Purpl/issues"
   },
