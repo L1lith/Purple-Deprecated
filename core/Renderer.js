@@ -23,8 +23,20 @@ class Renderer {
     if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
     const matches = this.matchPath(path, ext).sort(routeOrder())
     if (!matches.length < 1) return null
-    const htmlMatch = matches.filter(page => page[1] === '.html')[0]
-    if (!htmlMatch) return renderJS(matches, path, ext)
+    if (!ext || ext === '.html') {
+      const htmlMatch = matches.filter(page => page[1] === '.html')[0]
+      if (!htmlMatch) {
+        if (!ext) {
+          return this.renderJS(matches, path, ext)
+        } else {
+          return null
+        }
+      }
+    } else if (ext === '.js') {
+      return this.renderJS(matches, path, ext)
+    } else {
+      throw new Error(`Unexpected Extension ${ext}`)
+    }
     const rawHTML = await readFile(htmlMatch[0])
     //return [rawHTML, '.html']
   }
