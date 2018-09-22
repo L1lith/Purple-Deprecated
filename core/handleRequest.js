@@ -19,7 +19,7 @@ function handleRequest(directory) {
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character(s)")
     const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
     if (rawResponse === null) return next()
-    res.type(foundType).send(rawResponse)
+    res.type(foundType.replace(/^\./, '')).send(rawResponse)
     const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
     mkdirp(dirname(responsePath), err => {
       if (err) return console.log(err)
