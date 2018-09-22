@@ -1,5 +1,5 @@
 function removeExtensionFromPath(path) {
-  return path.replace(/\..+$/, '')
+  return path.replace(/\.[a-zA-Z]+$/, '')
 }
 
 module.exports = removeExtensionFromPath
