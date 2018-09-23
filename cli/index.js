@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 const command = require('yargs').argv._[0]
 const {sanitize, F} = require('sandhands')
 const {join} = require('path')
