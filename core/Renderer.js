@@ -12,6 +12,7 @@ class Renderer {
     this.rootDirectory = directory
     this.directory = join(directory, 'pages')
     this.pageMap = createPageMap(this.directory)
+    console.log(this.pageMap)
     try {
       accessSync(this.directory)
     } catch(err) {
@@ -21,32 +22,26 @@ class Renderer {
   }
   async render(path, ext) {
     if (path.startsWith('/')) path = path.substring(1)
-    if (ext === '.html') ext = null // We need both JS and HTML matches for HTML rendering
-    const matches = this.matchPath(path, ext).sort(routeOrder())
-
-    if (matches.length < 1) return null
-    if (!ext || ext === '.html') {
-      return this.renderHTML(matches, path, ext)
+    if (ext === null || ext === '.html') {
+      return this.renderHTML(path, ext === null)
     } else if (ext === '.js') {
-      return this.renderJS(matches, path, ext)
+      return this.renderJS(path)
     } else {
       throw new Error(`Unexpected Extension ${ext}`)
     }
     //return [rawHTML, '.html']
   }
-  async renderHTML(matches, path, ext) {
-    const htmlMatch = matches.filter(page => page[1] === '.html')[0]
+  async renderHTML(path, tryAsJavascript=false) {
+    const htmlMatches = this.matchPath(path, '.html')
+    const htmlMatch = htmlMatches.sort(routeOrder())[0]
     if (!htmlMatch) {
-      if (!ext) {
-        return this.renderJS(matches, path, ext)
-      } else {
-        return null
-      }
+      if (tryAsJavascript === true) return this.renderJS(matches, path, ext)
+      return null
     }
     const rawHTML = await readFile(htmlMatch[0])
-    const jsToRender = matches.filter(page => page[1] === '.js')
-    if (jsToRender.length < 1) return [rawHTML, '.html']
-    
+    const jsMatches = this.matchPath(path, '.js')
+    if (jsMatches.length < 1) return [rawHTML, '.html']
+    console.log("TODO: Render JSMatches: ", jsMatches)
   }
   async renderJS(matches) {
 
