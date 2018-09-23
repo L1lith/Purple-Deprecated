@@ -2,12 +2,11 @@ const {join} = require('path')
 
 const serverDir = join(__dirname, '..')
 
-module.exports = {
+module.exports = merge(require('./webpack.config.js', {
   target: "node",
-  entry: join(serverDir, "index.js"),
-  context: serverDir,
-  mode: process.env.NODE_ENV || "development",
   output: {
     path: join(__dirname, 'build')
-  }
-}
+  },
+  entry: join(serverDir, "index.js"),
+  context: serverDir
+})
