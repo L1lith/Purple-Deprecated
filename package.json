@@ -41,6 +41,7 @@
     "express-async-handler": "^1.1.4",
     "fs-extra": "^7.0.0",
     "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
     "node-dir": "^0.1.17",
     "packenv": "^1.0.4",
     "path-to-regexp": "^2.4.0",
