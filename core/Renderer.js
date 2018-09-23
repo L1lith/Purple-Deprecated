@@ -38,7 +38,7 @@ class Renderer {
       if (tryAsJavascript === true) return this.renderJS(matches, path, ext)
       return null
     }
-    const rawHTML = await readFile(htmlMatch[0])
+    const rawHTML = await readFile(htmlMatch)
     const jsMatches = this.matchPath(path, '.js')
     if (jsMatches.length < 1) return [rawHTML, '.html']
     console.log("TODO: Render JSMatches: ", jsMatches)
@@ -56,7 +56,7 @@ class Renderer {
       const [regex, full, ext] = this.pageMap[i]
       if (targetExt === null || targetExt === ext) {
         if (regex.test(path)) {
-          matches.push([full, ext])
+          matches.push(targetExt === null ? [full, ext] : full)
         }
       }
     }
