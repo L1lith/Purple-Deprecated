@@ -32,7 +32,11 @@
   },
   "homepage": "https://github.com/L1lith/Purpl#readme",
   "dependencies": {
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "auto-bind": "^1.2.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
     "express": "^4.16.3",
     "express-async-handler": "^1.1.4",
     "fs-extra": "^7.0.0",
