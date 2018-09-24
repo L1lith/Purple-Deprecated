@@ -10,5 +10,8 @@
     "purple",
     "web",
     "application"
-  ]
+  ],
+  "dependencies": {
+    "react": "^16.5.2"
+  }
 }
