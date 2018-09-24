@@ -21,7 +21,9 @@ try {
 } catch(err) {
   console.warn("Warning: Package.json not found in target directory.")
 }
+
 options = {...options, ...args}
+process.env.PURPLE_DIRECTORY = directory
 
 core(directory, options).catch(err => {
   console.log(err)
