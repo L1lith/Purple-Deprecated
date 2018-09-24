@@ -8,4 +8,4 @@ async function runPurpl(directory, {port=8040}) {
   console.log(`Purpl Server Running on Port ${port}`)
 }
 
-module.exports = runPurpl
+runPurpl(PURPLE_DIRECTORY, PURPLE_OPTIONS).catch(console.log)

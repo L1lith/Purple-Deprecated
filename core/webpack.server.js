@@ -1,3 +1,4 @@
+const {DefinePlugin} = require('webpack')
 const merge = require('webpack-merge')
 const {join} = require('path')
 
@@ -9,5 +10,11 @@ module.exports = merge(require('./webpack.config.js'), {
     path: join(__dirname, 'build')
   },
   entry: ['@babel/polyfill', join(serverDir, "/core/index.js")],
-  context: serverDir
+  context: serverDir,
+  plugins: [
+    new DefinePlugin({
+        'PURPLE_DIRECTORY': `"${process.env.PURPLE_DIRECTORY}"`,
+        'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS
+    })
+  ]
 })

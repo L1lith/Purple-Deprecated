@@ -1,6 +1,5 @@
 const webpack = require("webpack")
 const {dirname, join} = require('path')
-const core = require('../../core')
 const validateArgs = require('../validateArgs')
 
 const root = join(__dirname, '../../')
@@ -27,6 +26,7 @@ try {
 
 options = {...options, ...args}
 process.env.PURPLE_DIRECTORY = directory
+process.env.PURPLE_OPTIONS = JSON.stringify(options)
 
 const webpackConfig = require('../../core/webpack.server.js')
 

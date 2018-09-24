@@ -34,6 +34,7 @@ class Renderer {
   async renderHTML(path, tryAsJavascript=false) {
     const htmlMatches = this.matchPath(path, '.html')
     const htmlMatch = htmlMatches.sort(routeOrder())[0]
+    console.log(path, htmlMatch)
     if (!htmlMatch) {
       if (tryAsJavascript === true) return this.renderJS(matches, path, ext)
       return null
@@ -47,6 +48,7 @@ class Renderer {
 
   }
   matchPath(path, targetExt=null) {
+    console.log(`Path: '${path}'`, targetExt)
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string') throw new Error("Invalid Path")
@@ -54,6 +56,7 @@ class Renderer {
     const matches = []
     for (let i = 0; i < this.pageMap.length; i++) {
       const [regex, full, ext] = this.pageMap[i]
+      console.log(regex, ext, regex.test(path))
       if (targetExt === null || targetExt === ext) {
         if (regex.test(path)) {
           matches.push(targetExt === null ? [full, ext] : full)
