@@ -1,3 +1,6 @@
+const {join} = require('path')
+const purpleModules = join(__dirname,'../node_modules')
+
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   module: {
@@ -11,5 +14,8 @@ module.exports = {
         }
       }
     }]
+  },
+  resolve: {
+    modules: [join(process.env.PURPLE_DIRECTORY, 'node_modules/')]
   }
 }

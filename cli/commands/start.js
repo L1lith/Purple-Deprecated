@@ -1,6 +1,9 @@
+const webpack = require("webpack")
+const {dirname, join} = require('path')
 const core = require('../../core')
 const validateArgs = require('../validateArgs')
-const {dirname, join} = require('path')
+
+const root = join(__dirname, '../../')
 
 const args = validateArgs({
   "directory": {
@@ -25,7 +28,11 @@ try {
 options = {...options, ...args}
 process.env.PURPLE_DIRECTORY = directory
 
-core(directory, options).catch(err => {
-  console.log(err)
-  process.exit(1)
+const webpackConfig = require('../../core/webpack.server.js')
+
+console.log("Building Webpack Server")
+webpack(webpackConfig, (err, stats) => {
+  if (err) return console.log(err)
+  console.log("Starting Webpack Server")
+  require(join(root, 'core/build/main.js'))
 })
