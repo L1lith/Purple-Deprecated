@@ -3,3 +3,4 @@ node_modules/
 /Purple-Project/
 cache/
 build/
+/core/jsRouteMap.js
