@@ -12,7 +12,11 @@ const commandAliases = {
 if (commandAliases.hasOwnProperty(command)) command = commandAliases[command]
 
 if (!command) throw new Error("Missing Command Argument!")
-sanitize(command, F(String).regex(/^[a-zA-Z]+$/))
+try {
+  sanitize(command, F(String).regex(/^[a-zA-Z]+$/))
+} catch(err) {
+  throw "Malformed Command"
+}
 
 const commandPath = join(__dirname, './commands/'+command+".js")
 
