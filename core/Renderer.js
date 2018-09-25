@@ -12,7 +12,6 @@ class Renderer {
     this.rootDirectory = directory
     this.directory = join(directory, 'pages')
     this.pageMap = createPageMap(this.directory)
-    console.log(this.pageMap)
     try {
       accessSync(this.directory)
     } catch(err) {
@@ -34,7 +33,6 @@ class Renderer {
   async renderHTML(path, tryAsJavascript=false) {
     const htmlMatches = this.matchPath(path, '.html')
     const htmlMatch = htmlMatches.sort(routeOrder())[0]
-    console.log(path, htmlMatch)
     if (!htmlMatch) {
       if (tryAsJavascript === true) return this.renderJS(matches, path, ext)
       return null
@@ -42,13 +40,11 @@ class Renderer {
     const rawHTML = await readFile(htmlMatch)
     const jsMatches = this.matchPath(path, '.js')
     if (jsMatches.length < 1) return [rawHTML, '.html']
-    console.log("TODO: Render JSMatches: ", jsMatches)
   }
   async renderJS(matches) {
 
   }
   matchPath(path, targetExt=null) {
-    console.log(`Path: '${path}'`, targetExt)
     path = removeExtensionFromPath(path)
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
     if (typeof path != 'string') throw new Error("Invalid Path")
@@ -56,7 +52,6 @@ class Renderer {
     const matches = []
     for (let i = 0; i < this.pageMap.length; i++) {
       const [regex, full, ext] = this.pageMap[i]
-      console.log(regex, ext, regex.test(path))
       if (targetExt === null || targetExt === ext) {
         if (regex.test(path)) {
           matches.push(targetExt === null ? [full, ext] : full)
