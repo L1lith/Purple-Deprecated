@@ -20,13 +20,15 @@ function handleRequest(directory) {
     const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
     if (rawResponse === null) return next()
     res.type(foundType.replace(/^\./, '')).send(rawResponse)
-    const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
-    mkdirp(dirname(responsePath), err => {
-      if (err) return console.log(err)
-      writeFile(responsePath, rawResponse, err => {
-        if (err) console.log(err)
+    if (process.env.NODE_ENV === "production") { // Only Cache Responses in Production
+      const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
+      mkdirp(dirname(responsePath), err => {
+        if (err) return console.log(err)
+        writeFile(responsePath, rawResponse, err => {
+          if (err) console.log(err)
+        })
       })
-    })
+    }
   })
 }
 

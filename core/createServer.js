@@ -13,9 +13,11 @@ async function createServer(directory) {
     app.use(express.static(staticDir))
   } catch(err) {}
 
-  const cacheDir = join(directory, 'cache')
-  mkdirp(cacheDir)
-  app.use(express.static(cacheDir))
+  if (process.env.NODE_ENV === "production") { // Only Cache Responses in Production
+    const cacheDir = join(directory, 'cache')
+    mkdirp(cacheDir)
+    app.use(express.static(cacheDir))
+  }
   app.use(handleRequest(directory))
 
   // let serverHookPath = null
