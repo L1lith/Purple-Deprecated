@@ -1,8 +1,15 @@
 #!/usr/bin/env node --harmony
-const command = require('yargs').argv._[0]
+let command = require('yargs').argv._[0]
 const {sanitize, F} = require('sandhands')
 const {join} = require('path')
 const {accessSync} = require('fs')
+
+const commandAliases = {
+  "run": "start",
+  "create": "init"
+}
+
+if (commandAliases.hasOwnProperty(command)) command = commandAliases[command]
 
 if (!command) throw new Error("Missing Command Argument!")
 sanitize(command, F(String).regex(/^[a-zA-Z]+$/))
