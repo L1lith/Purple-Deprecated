@@ -11,6 +11,7 @@ const babelOptions = require('./babelOptions')
 const transform = require("@babel/core")
 const jsRouteMap = require("./jsRouteMap")
 const ReactDOMServer = require('react-dom/server')
+const {JSDOM} = require("jsdom")
 
 Object.entries(jsRouteMap).forEach(([route, output]) => {
   if (!isValidElement(output)) throw `Route "${route}" Must Export a valid React Element.`
@@ -32,10 +33,9 @@ class HTMLRenderer {
     const htmlPaths = this.matchPath(path, '.html')
     const htmlPath = htmlPaths.sort(routeOrder())[0]
     const rawHTML = htmlPath ? (await readFile(htmlPath)).toString() : null
-    const rawJS = await this.renderJSAsHTML(path)
-    if (!rawHTML && !rawJS) return null
+    const rawJS = await this.renderJS(path)
     // TODO: Properly Merge html using root id
-    return (rawHTML || "") + (rawJS || "")
+    return this.mergeHTMLJS(rawHTML, rawJS)
   }
   async renderJS(path) {
     const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
@@ -43,6 +43,23 @@ class HTMLRenderer {
     const reactElements = jsPaths.map(path => jsRouteMap[path])
     const rawHTML = reactElements.map(element => ReactDOMServer.renderToString(element)).join('\n')
     return rawHTML
+  }
+  mergeHTMLJS(html, js) {
+    if (!html && !js) return null
+    if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
+    if (!js) return html
+    const dom = new JSDOM(html)
+    const {document} = dom.window
+    const {body} = document
+    let root = document.getElementById("root")
+    if (!root) { // Root not found, create new root
+      root = document.createElement("div")
+      root.id = 'root'
+      body.appendChild(root)
+    }
+    root.innerHTML = js
+
+    return body.parentNode.outerHTML
   }
   matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)
