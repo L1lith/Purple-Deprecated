@@ -1,11 +1,20 @@
 const autoBind = require('auto-bind')
 const {readFile, readFileSync} = require('fs-extra')
-const {join, extname} = require('path')
+const {join, extname, resolve} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 const routeOrder = require('route-order')
+const {isValidElement} = require('react')
+const babelOptions = require('./babelOptions')
+const transform = require("@babel/core")
+const jsRouteMap = require("./jsRouteMap")
+const ReactDOMServer = require('react-dom/server')
+
+Object.entries(jsRouteMap).forEach(([route, output]) => {
+  if (!isValidElement(output)) throw `Route "${route}" Must Export a valid React Element.`
+})
 
 class Renderer {
   constructor(directory) {
@@ -31,18 +40,23 @@ class Renderer {
     //return [rawHTML, '.html']
   }
   async renderHTML(path, tryAsJavascript=false) {
-    const htmlMatches = this.matchPath(path, '.html')
-    const htmlMatch = htmlMatches.sort(routeOrder())[0]
-    if (!htmlMatch) {
-      if (tryAsJavascript === true) return this.renderJS(matches, path, ext)
+    const htmlPaths = this.matchPath(path, '.html')
+    const htmlPath = htmlPaths.sort(routeOrder())[0]
+    if (!htmlPath) {
+      if (tryAsJavascript === true) return this.renderJSAsHTML(path, ext)
       return null
     }
-    const rawHTML = await readFile(htmlMatch)
-    const jsMatches = this.matchPath(path, '.js')
-    if (jsMatches.length < 1) return [rawHTML, '.html']
+    const rawHTML = (await readFile(htmlPath)).toString()
+    const rawJS = await this.renderJSAsHTML(path)
+    console.log(rawHTML, rawJS)
+    return rawHTML + (rawJS || "")
   }
-  async renderJS(matches) {
-
+  async renderJSAsHTML(path) {
+    const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
+    if (jsPaths.length < 1) return null
+    const reactElements = jsPaths.map(path => jsRouteMap[path])
+    const rawHTML = reactElements.map(element => ReactDOMServer.renderToString(element)).join('\n')
+    return rawHTML
   }
   matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)

@@ -17,9 +17,9 @@ function handleRequest(directory) {
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
     if (ext === '.jsp') ext = '.js' // Convert JSP (JavaScript Page) to actual JS extension
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character(s)")
-    const [rawResponse, foundType] = await renderer.render(path, ext) || [null, null]
+    const rawResponse = (await renderer.render(path, ext)) || null
     if (rawResponse === null) return next()
-    res.type(foundType.replace(/^\./, '')).send(rawResponse)
+    res.type('.html').send(rawResponse)
     if (process.env.NODE_ENV === "production") { // Only Cache Responses in Production
       const responsePath = join(directory, 'cache', path+foundType).replace(replaceIndexRegex, "index")
       mkdirp(dirname(responsePath), err => {

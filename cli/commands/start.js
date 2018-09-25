@@ -1,6 +1,7 @@
 const webpack = require("webpack")
 const {dirname, join} = require('path')
 const validateArgs = require('../validateArgs')
+const createJSRouteMap = require('../functions/createJSRouteMap')
 
 const root = join(__dirname, '../../')
 
@@ -27,6 +28,8 @@ try {
 options = {...options, ...args}
 process.env.PURPLE_DIRECTORY = directory
 process.env.PURPLE_OPTIONS = JSON.stringify(options)
+
+createJSRouteMap(join(directory, "pages/"))
 
 const webpackConfig = require('../../core/webpack.server.js')
 
