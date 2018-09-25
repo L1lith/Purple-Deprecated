@@ -11,7 +11,7 @@ async function createJSRouteMap(directory) {
 function createRawJSMap(routes) {
 return (
 `const routes = {
-${routes.map(route => `    "${route}": require("${route}")`).join('\n')}
+${routes.map(route => `    "${route}": require("${route}")`).join(',\n')}
 }
 
 Object.entries(routes).forEach(([route, output]) => {
