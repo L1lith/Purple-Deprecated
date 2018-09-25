@@ -9,7 +9,7 @@ module.exports = merge(require('./webpack.config.js'), {
   output: {
     path: join(__dirname, 'build')
   },
-  entry: ['@babel/polyfill', join(serverDir, "/core/index.js")],
+  entry: ['@babel/polyfill', join(__dirname, "index.js")],
   context: serverDir,
   plugins: [
     new DefinePlugin({
