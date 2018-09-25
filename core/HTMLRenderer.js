@@ -16,7 +16,7 @@ Object.entries(jsRouteMap).forEach(([route, output]) => {
   if (!isValidElement(output)) throw `Route "${route}" Must Export a valid React Element.`
 })
 
-class Renderer {
+class HTMLRenderer {
   constructor(directory) {
     this.rootDirectory = directory
     this.directory = join(directory, 'pages')
@@ -28,30 +28,16 @@ class Renderer {
     }
     autoBind(this)
   }
-  async render(path, ext) {
-    if (path.startsWith('/')) path = path.substring(1)
-    if (ext === null || ext === '.html') {
-      return this.renderHTML(path, ext === null)
-    } else if (ext === '.js') {
-      return this.renderJS(path)
-    } else {
-      throw new Error(`Unexpected Extension ${ext}`)
-    }
-    //return [rawHTML, '.html']
-  }
-  async renderHTML(path, tryAsJavascript=false) {
+  async renderHTML(path) {
     const htmlPaths = this.matchPath(path, '.html')
     const htmlPath = htmlPaths.sort(routeOrder())[0]
-    if (!htmlPath) {
-      if (tryAsJavascript === true) return this.renderJSAsHTML(path, ext)
-      return null
-    }
-    const rawHTML = (await readFile(htmlPath)).toString()
+    const rawHTML = htmlPath ? (await readFile(htmlPath)).toString() : null
     const rawJS = await this.renderJSAsHTML(path)
-    console.log(rawHTML, rawJS)
-    return rawHTML + (rawJS || "")
+    if (!rawHTML && !rawJS) return null
+    // TODO: Properly Merge html using root id
+    return (rawHTML || "") + (rawJS || "")
   }
-  async renderJSAsHTML(path) {
+  async renderJS(path) {
     const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
     if (jsPaths.length < 1) return null
     const reactElements = jsPaths.map(path => jsRouteMap[path])
@@ -76,4 +62,4 @@ class Renderer {
   }
 }
 
-module.exports = Renderer
+module.exports = HTMLRenderer
