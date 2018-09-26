@@ -10,6 +10,7 @@ const {isValidElement} = require('react')
 const jsRouteMap = require("./jsRouteMap")
 const ReactDOMServer = require('react-dom/server')
 const {JSDOM} = require("jsdom")
+const pretty = require("pretty")
 
 Object.entries(jsRouteMap).forEach(([route, output]) => {
   if (!isValidElement(output)) throw `Route "${route}" Must Export a valid React Element.`
@@ -33,7 +34,9 @@ class HTMLRenderer {
     const rawHTML = htmlPath ? (await readFile(htmlPath)).toString() : null
     const rawJS = await this.renderJS(path)
     // TODO: Properly Merge html using root id
-    return this.mergeHTMLJS(rawHTML, rawJS)
+    let finalHTML = this.mergeHTMLJS(rawHTML, rawJS)
+    if (!finalHTML.startsWith('<!DOCTYPE')) finalHTML = '<!DOCTYPE html>' + finalHTML
+    return pretty(finalHTML)
   }
   async renderJS(path) {
     const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
@@ -45,7 +48,7 @@ class HTMLRenderer {
   mergeHTMLJS(html, js) {
     if (!html && !js) return null
     if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
-    if (!js) return html
+    if (!js) return (new JSDOM(html)).window.document.body.parentNode.outerHTML // Ensure the proper HTML tags exist (html, body, head etc)
     const dom = new JSDOM(html)
     const {document} = dom.window
     const {body} = document
