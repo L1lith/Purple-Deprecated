@@ -6,14 +6,15 @@ const {sanitize} = require('sandhands')
 const createPageMap = require('./createPageMap')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 const routeOrder = require('route-order')
-const {isValidElement} = require('react')
+const {isValidElement, createElement, cloneElement} = require('react')
+const isReactComponent = require('./functions/isReactComponent')
 const jsRouteMap = require("./jsRouteMap")
 const ReactDOMServer = require('react-dom/server')
 const {JSDOM} = require("jsdom")
 const pretty = require("pretty")
 
 Object.entries(jsRouteMap).forEach(([route, output]) => {
-  if (!isValidElement(output)) throw `Route "${route}" Must Export a valid React Element.`
+  if (!isValidElement(output) && !isReactComponent(output)) throw new Error(`Route "${route}" must export a valid React Component or Element.`)
 })
 
 class HTMLRenderer {
@@ -30,20 +31,29 @@ class HTMLRenderer {
   }
   async renderHTML(path) {
     const htmlPaths = this.matchPath(path, '.html')
-    const htmlPath = htmlPaths.sort(routeOrder())[0]
-    const rawHTML = htmlPath ? (await readFile(htmlPath)).toString() : null
+    let rawHtml = null
+    if (htmlPaths.length > 0) {
+      rawHTML = ""
+      for (let i = 0; i < htmlPaths.length; i++) {
+        rawHTML += (await readFile(htmlPaths[i])).toString()
+      }
+    }
     const rawJS = await this.renderJS(path)
     // TODO: Properly Merge html using root id
     let finalHTML = this.mergeHTMLJS(rawHTML, rawJS, path)
+    if (finalHTML === null) return null
     if (!finalHTML.startsWith('<!DOCTYPE')) finalHTML = '<!DOCTYPE html>' + finalHTML
     return pretty(finalHTML)
   }
   async renderJS(path) {
     const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
     if (jsPaths.length < 1) return null
-    const reactElements = jsPaths.map(path => jsRouteMap[path])
-    const rawHTML = reactElements.map(element => ReactDOMServer.renderToString(element)).join('\n')
-    return rawHTML
+    const reactElements = jsPaths.map(path => jsRouteMap[path]).map(element => {
+      if (!isReactComponent(element)) return element
+      return createElement(element, {global: {}, serverSide: true, clientSide: false, path})
+    }).map((element, index) => cloneElement(element, {key: index}))
+    const appElement = createElement('div', null, reactElements)
+    return ReactDOMServer.renderToString(appElement)
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
