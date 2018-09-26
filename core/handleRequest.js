@@ -20,7 +20,7 @@ function handleRequest(directory) {
       const rawResponse = (await pageRenderer.renderHTML(path)) || null
       if (rawResponse === null) return next()
       res.type('.html').send(rawResponse)
-      if (process.env.NODE_ENV === "production") { // Only Cache Responses in Production
+      if (true /*process.env.NODE_ENV === "production"*/) { // Uncomment to Only Cache Responses in Production
         const responsePath = join(directory, 'cache', (path.endsWith('/') ? path + "index" : path)+(ext || '.html')).replace(replaceIndexRegex, "index")
         mkdirp(dirname(responsePath), err => {
           if (err) return console.log(err)
