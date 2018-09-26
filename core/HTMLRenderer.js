@@ -3,34 +3,21 @@ const {readFile, readFileSync} = require('fs-extra')
 const {join, extname, resolve} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
-const createPageMap = require('./createPageMap')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
-const routeOrder = require('route-order')
 const {isValidElement, createElement, cloneElement} = require('react')
 const isReactComponent = require('./functions/isReactComponent')
-const jsRouteMap = require("./jsRouteMap")
 const ReactDOMServer = require('react-dom/server')
 const {JSDOM} = require("jsdom")
 const pretty = require("pretty")
-
-Object.entries(jsRouteMap).forEach(([route, output]) => {
-  if (!isValidElement(output) && !isReactComponent(output)) throw new Error(`Route "${route}" must export a valid React Component or Element.`)
-})
+const createApp = require('./functions/createApp')
+const matchPath = require('./functions/matchPath')
 
 class HTMLRenderer {
-  constructor(directory) {
-    this.rootDirectory = directory
-    this.directory = join(directory, 'pages')
-    this.pageMap = createPageMap(this.directory)
-    try {
-      accessSync(this.directory)
-    } catch(err) {
-      throw new Error("Missing /pages Directory")
-    }
+  constructor() {
     autoBind(this)
   }
   async renderHTML(path) {
-    const htmlPaths = this.matchPath(path, '.html')
+    const htmlPaths = matchPath(path, '.html')
     let rawHtml = null
     if (htmlPaths.length > 0) {
       rawHTML = ""
@@ -46,14 +33,7 @@ class HTMLRenderer {
     return pretty(finalHTML)
   }
   async renderJS(path) {
-    const jsPaths = this.matchPath(path, '.js').sort(routeOrder())
-    if (jsPaths.length < 1) return null
-    const reactElements = jsPaths.map(path => jsRouteMap[path]).map(element => {
-      if (!isReactComponent(element)) return element
-      return createElement(element, {global: {}, serverSide: true, clientSide: false, path})
-    }).map((element, index) => cloneElement(element, {key: index}))
-    const appElement = createElement('div', null, reactElements)
-    return ReactDOMServer.renderToString(appElement)
+    return ReactDOMServer.renderToString(createApp(path))
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
@@ -79,25 +59,9 @@ class HTMLRenderer {
   }
   injectAppHook(document, path) {
     const script = document.createElement("script")
-    script.setAttribute("async", true)
+    script.setAttribute("defer", true)
     script.src = (path.endsWith('/') ? path + "index" : path) + ".jsp"
     document.head.appendChild(script)
-  }
-  matchPath(path, targetExt=null) {
-    path = removeExtensionFromPath(path)
-    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character")
-    if (typeof path != 'string') throw new Error("Invalid Path")
-    if (targetExt !== null && typeof targetExt != 'string') throw new Error("Unexpected or missing type")
-    const matches = []
-    for (let i = 0; i < this.pageMap.length; i++) {
-      const [regex, full, ext] = this.pageMap[i]
-      if (targetExt === null || targetExt === ext) {
-        if (regex.test(path)) {
-          matches.push(targetExt === null ? [full, ext] : full)
-        }
-      }
-    }
-    return matches
   }
 }
 

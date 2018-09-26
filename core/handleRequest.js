@@ -13,10 +13,9 @@ function handleRequest(directory) {
   return asyncHandler(async (req, res, next) => {
     let path = url.parse(req.url).pathname
     const ext = extname(path)
-    console.log(ext, req.url, path)
     path = removeExtensionFromPath(path).replace(replaceIndexRegex, '')
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
-    if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character(s)")
+    if (path.includes('~') || path.includes("..")) return next()
     if (!ext || ext === '.html') {
       const rawResponse = (await pageRenderer.renderHTML(path)) || null
       if (rawResponse === null) return next()

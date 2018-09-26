@@ -1,7 +1,7 @@
 const dir = require('node-dir')
 const {relative, extname} = require("path")
-const convertPathToRegex = require('./functions/convertPathToRegex')
-const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
+const convertPathToRegex = require('./convertPathToRegex')
+const removeExtensionFromPath = require('./removeExtensionFromPath')
 
 const replaceIndexRegex = /(?<=(^|\/))index($|\/)/
 
