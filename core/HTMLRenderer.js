@@ -18,7 +18,7 @@ class HTMLRenderer {
   }
   async renderHTML(path) {
     const htmlPaths = matchPath(path, '.html')
-    let rawHtml = null
+    let rawHTML = null
     if (htmlPaths.length > 0) {
       rawHTML = ""
       for (let i = 0; i < htmlPaths.length; i++) {
