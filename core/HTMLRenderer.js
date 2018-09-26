@@ -33,7 +33,7 @@ class HTMLRenderer {
     return pretty(finalHTML)
   }
   async renderJS(path) {
-    return ReactDOMServer.renderToString(createApp(path))
+    return ReactDOMServer.renderToString(createApp(path, true))
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
