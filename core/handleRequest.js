@@ -12,7 +12,8 @@ function handleRequest(directory) {
   const pageRenderer = new HTMLRenderer(directory)
   return asyncHandler(async (req, res, next) => {
     let path = url.parse(req.url).pathname
-    const ext = extname(path) || ".html"
+    const ext = extname(path)
+    console.log(ext, req.url, path)
     path = removeExtensionFromPath(path).replace(replaceIndexRegex, '')
     if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
     if (path.includes('~') || path.includes("..")) throw new Error("Illegal Path Character(s)")
@@ -31,6 +32,7 @@ function handleRequest(directory) {
       }
     } else if (ext === '.jsp') {
       // TODO: Serve Javascript to Hydrate Page
+      
     }
   })
 }

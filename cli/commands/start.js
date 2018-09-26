@@ -20,7 +20,7 @@ const directory = args.directory || process.cwd()
 
 let options = {}
 try {
-  options = require(join(directory, "package.json")).purpl || {}
+  options = require(join(directory, "package.json")).purple || {}
 } catch(err) {
   console.warn("Warning: Package.json not found in target directory.")
 }

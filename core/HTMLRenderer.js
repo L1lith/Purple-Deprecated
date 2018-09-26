@@ -34,7 +34,7 @@ class HTMLRenderer {
     const rawHTML = htmlPath ? (await readFile(htmlPath)).toString() : null
     const rawJS = await this.renderJS(path)
     // TODO: Properly Merge html using root id
-    let finalHTML = this.mergeHTMLJS(rawHTML, rawJS)
+    let finalHTML = this.mergeHTMLJS(rawHTML, rawJS, path)
     if (!finalHTML.startsWith('<!DOCTYPE')) finalHTML = '<!DOCTYPE html>' + finalHTML
     return pretty(finalHTML)
   }
@@ -45,10 +45,14 @@ class HTMLRenderer {
     const rawHTML = reactElements.map(element => ReactDOMServer.renderToString(element)).join('\n')
     return rawHTML
   }
-  mergeHTMLJS(html, js) {
+  mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
     if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
-    if (!js) return (new JSDOM(html)).window.document.body.parentNode.outerHTML // Ensure the proper HTML tags exist (html, body, head etc)
+    if (!js) {
+      const dom = new JSDOM(html)
+      const {document} = dom.window
+      return document.documentElement.outerHTML // Ensure the proper HTML tags exist (html, body, head etc)
+    }
     const dom = new JSDOM(html)
     const {document} = dom.window
     const {body} = document
@@ -59,8 +63,15 @@ class HTMLRenderer {
       body.appendChild(root)
     }
     root.innerHTML = js
+    this.injectAppHook(document, path)
 
-    return body.parentNode.outerHTML
+    return document.documentElement.outerHTML
+  }
+  injectAppHook(document, path) {
+    const script = document.createElement("script")
+    script.setAttribute("async", true)
+    script.src = (path.endsWith('/') ? path + "index" : path) + ".jsp"
+    document.head.appendChild(script)
   }
   matchPath(path, targetExt=null) {
     path = removeExtensionFromPath(path)

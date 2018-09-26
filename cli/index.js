@@ -24,7 +24,7 @@ try {
   accessSync(commandPath)
 } catch(err) {
   console.log(err)
-  throw new Error(`The command ${command} does not exist. Try "purpl help"`)
+  throw new Error(`The command ${command} does not exist. Try "purple help"`)
 }
 
 require(commandPath)

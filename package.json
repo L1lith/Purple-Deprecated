@@ -1,5 +1,5 @@
 {
-  "name": "purpl",
+  "name": "purple",
   "version": "0.0.1",
   "description": "High Performance Isomorphic React Framework",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/L1lith/Purpl.git"
+    "url": "git+https://github.com/L1lith/Purple.git"
   },
   "keywords": [
     "javascript",
@@ -25,12 +25,12 @@
   "author": "L1lith",
   "license": "MIT",
   "bin": {
-    "purpl": "./cli/index.js"
+    "purple": "./cli/index.js"
   },
   "bugs": {
-    "url": "https://github.com/L1lith/Purpl/issues"
+    "url": "https://github.com/L1lith/Purple/issues"
   },
-  "homepage": "https://github.com/L1lith/Purpl#readme",
+  "homepage": "https://github.com/L1lith/Purple#readme",
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@babel/polyfill": "^7.0.0",

@@ -7,6 +7,7 @@ const handleRequest = require('./handleRequest')
 async function createServer(directory) {
   const app = express()
   app.disable('x-powered-by')
+  //app.use(express.static(join(__dirname, 'resources/')))
   const staticDir = join(directory, 'static')
   try {
     await access(staticDir)
