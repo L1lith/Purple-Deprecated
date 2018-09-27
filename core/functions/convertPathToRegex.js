@@ -21,7 +21,7 @@ function replaceIn(string, searches) {
 }
 
 function notEscaped(string) {
-  return new RegExp('(^|[^\\\\])' + escapeForRegex(string), 'i')
+  return new RegExp('(?<!\\\\)' + escapeForRegex(string), 'i')
 }
 
 module.exports = convertPathToRegex
