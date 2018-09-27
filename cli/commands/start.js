@@ -30,15 +30,15 @@ options = {...options, ...args}
 process.env.PURPLE_DIRECTORY = directory
 process.env.PURPLE_OPTIONS = JSON.stringify(options)
 
-console.log(magenta("Starting Purple!"))
+console.log(cyan(`Starting ${magenta("Purple")}!`))
 
 createJSRouteMap(join(directory, "pages/"))
 
 const webpackConfig = require('../../core/webpack.server.js')
 
-console.log(cyan("Building Webpack Server..."))
+console.log("| "+ cyan("Building Webpack Server..."))
 webpack(webpackConfig, (err, stats) => {
   if (err) return console.log(err)
-  console.log(cyan("Starting Webpack Server..."))
+  console.log("| " + cyan("Starting Webpack Server..."))
   require(join(root, 'core/build/main.js'))
 })
