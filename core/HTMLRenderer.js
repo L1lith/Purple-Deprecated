@@ -40,11 +40,8 @@ class HTMLRenderer {
   async renderJS(path) {
     const paths = matchPath(path, '.js').sort(routeOrder())
     if (paths.length < 1) return null
-    const reactElements = paths.map(path => jsRouteMap[path]).map(element => {
-      if (!isReactComponent(element)) return element
-      return createElement(element, {global: {}, serverSide: forServer === true, clientSide: forServer === false, path})
-    }).map((element, index) => cloneElement(element, {key: index}))
-    return ReactDOMServer.renderToString(createApp(reactElements, true))
+    const reactElements = paths.map(path => jsRouteMap[path])
+    return ReactDOMServer.renderToString(createApp(reactElements, path, true))
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null

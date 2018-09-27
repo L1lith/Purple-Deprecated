@@ -35,7 +35,7 @@ function handleRequest(directory) {
       try {
         const result = await createAppBundle(path)
         if (result === null) return next()
-        res.type('application/javascript').send(result)
+        res.type('.js').send(result)
       } catch(err) {
         next(err)
       }

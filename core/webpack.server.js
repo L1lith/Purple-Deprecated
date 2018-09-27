@@ -2,6 +2,7 @@ const {DefinePlugin} = require('webpack')
 const merge = require('webpack-merge')
 const {join} = require('path')
 const baseWebpackConfig = require('./webpack.config.js')
+const nodeExternals = require('webpack-node-externals')
 
 const serverDir = join(__dirname, '..')
 
@@ -19,5 +20,6 @@ module.exports = merge(baseWebpackConfig, {
         'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS,
         "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
     })
-  ]
+  ],
+  externals: [nodeExternals()]
 })
