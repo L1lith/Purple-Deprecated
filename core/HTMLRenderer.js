@@ -8,7 +8,6 @@ const {isValidElement, createElement, cloneElement} = require('react')
 const isReactComponent = require('./functions/isReactComponent')
 const ReactDOMServer = require('react-dom/server')
 const {JSDOM} = require("jsdom")
-const pretty = require("pretty")
 const createApp = require('./functions/createApp')
 const matchPath = require('./functions/matchPath')
 
@@ -29,8 +28,8 @@ class HTMLRenderer {
     // TODO: Properly Merge html using root id
     let finalHTML = this.mergeHTMLJS(rawHTML, rawJS, path)
     if (finalHTML === null) return null
-    if (!finalHTML.startsWith('<!DOCTYPE')) finalHTML = '<!DOCTYPE html>' + finalHTML
-    return pretty(finalHTML)
+    if (!finalHTML.startsWith('<!DOCTYPE')) finalHTML = '<!DOCTYPE html>\n' + finalHTML
+    return finalHTML
   }
   async renderJS(path) {
     return ReactDOMServer.renderToString(createApp(path, true))
