@@ -16,7 +16,9 @@ module.exports = merge(baseWebpackConfig, {
   plugins: [
     new DefinePlugin({
         'PROJECT_DIRECTORY': `"${process.env.PROJECT_DIRECTORY}"`,
+        'process.env.PROJECT_DIRECTORY': `"${process.env.PROJECT_DIRECTORY}"`,
         'PURPLE_DIRECTORY': `"${serverDir}"`,
+        'process.env.PURPLE_DIRECTORY': `"${serverDir}"`,
         'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS,
         "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
     })

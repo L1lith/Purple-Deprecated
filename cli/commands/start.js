@@ -27,6 +27,7 @@ try {
 }
 
 options = {...options, ...args}
+process.env.PURPLE_DIRECTORY = root
 process.env.PROJECT_DIRECTORY = directory
 process.env.PURPLE_OPTIONS = JSON.stringify(options)
 
