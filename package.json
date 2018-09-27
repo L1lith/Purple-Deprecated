@@ -35,6 +35,7 @@
     "@babel/core": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
     "babel-loader": "^8.0.2",
+    "chalk": "^2.4.1",
     "directory-routes": "0.0.4",
     "fs-extra": "^7.0.0",
     "ncp": "^2.0.0",
