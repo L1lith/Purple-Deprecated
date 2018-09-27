@@ -8,6 +8,7 @@ const pathAliases = [
 ]
 
 function convertPathToRegex(path) {
+  path = path.split('#').filter((value, index) => index % 2  == 0).join('') // Allow Comments using the # Character.
   let parts = path.split('/').map(part => replaceIn(part, pathAliases))
 
   return new RegExp(`^${parts.join('\/')}$`, 'i')
