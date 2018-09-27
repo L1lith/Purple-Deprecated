@@ -4,12 +4,12 @@ const pathAliases = [
   ["**+", ".+"],
   ["*+", "[^/]+"],
   ["**", ".*"],
-  ["*", "[^/]*"],
+  ["*", "[^/]*"]
 ]
 
 function convertPathToRegex(path) {
   path = path.split(notEscaped('#')).filter(str => str.length > 0).filter((value, index) => index % 2  == 0).join('') // Allow Comments using the # Character.
-  let parts = path.split('/').map(part => replaceIn(part, pathAliases))
+  let parts = path.split('/').map(part => replaceIn(part, pathAliases).replace(/\\(?=.)/, ""))
 
   return new RegExp(`^${parts.join('\/')}$`, 'i')
 }
