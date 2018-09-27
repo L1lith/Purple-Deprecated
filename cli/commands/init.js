@@ -23,7 +23,7 @@ mkdirp.sync(directory)
 if (!lstatSync(directory).isDirectory()) throw "Path is not a directory"
 if (readdirSync(directory).length > 0) throw "You must specify a non empty directory with the -d flag"
 
-console.log(magenta(`Creating a new Purple Project!`))
+console.log(cyan(`Creating a new ${magenta("Purple")} Project!`))
 ncp(templateDir, directory, err => {
   if (err) {
     console.log(err)
@@ -35,6 +35,6 @@ ncp(templateDir, directory, err => {
       console.log(err)
       process.exit(1)
     }
-    console.log(cyan(`Purple Project Created in ${green(directoryDisplayName)}!\nTo get started ${green("cd")} into the directory and run "${green("npm start")}".`))
+    console.log(magenta("Done! ") + cyan(`Purple Project Created in ${green(directoryDisplayName)}!\nTo get started ${green("cd")} into the directory and run "${green("npm start")}".`))
   })
 })

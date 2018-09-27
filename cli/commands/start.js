@@ -2,6 +2,7 @@ const webpack = require("webpack")
 const {dirname, join} = require('path')
 const validateArgs = require('../validateArgs')
 const createJSRouteMap = require('../functions/createJSRouteMap')
+const {cyan, magenta} = require("chalk")
 
 const root = join(__dirname, '../../')
 
@@ -29,13 +30,15 @@ options = {...options, ...args}
 process.env.PURPLE_DIRECTORY = directory
 process.env.PURPLE_OPTIONS = JSON.stringify(options)
 
+console.log(magenta("Starting Purple!"))
+
 createJSRouteMap(join(directory, "pages/"))
 
 const webpackConfig = require('../../core/webpack.server.js')
 
-console.log("Building Webpack Server")
+console.log(cyan("Building Webpack Server..."))
 webpack(webpackConfig, (err, stats) => {
   if (err) return console.log(err)
-  console.log("Starting Webpack Server")
+  console.log(cyan("Starting Webpack Server..."))
   require(join(root, 'core/build/main.js'))
 })
