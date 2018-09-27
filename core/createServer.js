@@ -9,16 +9,17 @@ async function createServer(directory) {
   app.disable('x-powered-by')
   //app.use(express.static(join(__dirname, 'resources/')))
   const staticDir = join(directory, 'static')
+  let hasStaticDir = false
   try {
     await access(staticDir)
-    app.use(express.static(staticDir))
+    hasStaticDir = true
   } catch(err) {}
+  if (hasStaticDir) app.use(express.static(staticDir))
 
-  if (process.env.NODE_ENV === "production") { // Only Cache Responses in Production
-    const cacheDir = join(directory, 'cache')
-    mkdirp(cacheDir)
-    app.use(express.static(cacheDir))
-  }
+  const cacheDir = join(directory, 'cache')
+  mkdirp(cacheDir)
+  app.use(express.static(cacheDir))
+
   app.use(handleRequest(directory))
 
   // let serverHookPath = null
