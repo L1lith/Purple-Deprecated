@@ -35,6 +35,6 @@ ncp(templateDir, directory, err => {
       console.log(err)
       process.exit(1)
     }
-    console.log("+- " + magenta("Done! ") + cyan(`Purple Project Created in ${green(directoryDisplayName)}!\nTo get started ${green("cd")} into the directory and run "${green("npm start")}".`))
+    console.log("+- " + magenta("Done! ") + cyan(`Purple Project Created in ${green(directoryDisplayName)}!\n# To get started ${green("cd")} into the directory and run "${green("npm start")}".`))
   })
 })
