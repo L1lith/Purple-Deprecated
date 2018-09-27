@@ -7,7 +7,7 @@ When your browser makes a request for a webpage Purple finds your corresponding 
 
 Purple then caches the page under the `/cache` directory, and all subsequent requests to that URL are served that raw HTML without having to render those components server side again.
 
-This approach maximizes both server side and client side performance by only serving plain HTML while not having to evaluate large quantities of React/Javascript.
+This approach maximizes the client side performance by only serving plain HTML for the initial render and not having to evaluate large quantities of React/Javascript, and maximizes the server side performance by caching every response so pages are only generated once.
 
 After the client loads the initial HTML it then loads your React Components and add interactivity. This maximizes client side performance by not requiring slow Javascript evaluation before the initial HTML is rendered.
 
@@ -30,6 +30,5 @@ npm start
 ```
 
 ## To Do
-1. Client side Javascript interactivity/bundling has not yet been implemented (coming soon)
-2. Custom store implementation which automatically stores the state in localStorage and loads it upon navigation
-3. Currently Purple does not support running more than one app at a time.
+1. Custom store implementation which automatically stores the state in localStorage and loads it upon navigation
+2. Currently Purple does not support running more than one app at a time.
