@@ -4,3 +4,4 @@ node_modules/
 cache/
 build/
 /core/jsRouteMap.js
+/core/appSources/
