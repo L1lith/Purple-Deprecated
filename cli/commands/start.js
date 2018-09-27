@@ -36,9 +36,9 @@ createJSRouteMap(join(directory, "pages/"))
 
 const webpackConfig = require('../../core/webpack.server.js')
 
-console.log("| "+ cyan("Building Webpack Server..."))
+console.log("| "+ cyan("Building Server..."))
 webpack(webpackConfig, (err, stats) => {
   if (err) return console.log(err)
-  console.log("| " + cyan("Starting Webpack Server..."))
+  console.log("| " + cyan("Starting Server..."))
   require(join(root, 'core/build/main.js'))
 })
