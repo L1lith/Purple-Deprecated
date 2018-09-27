@@ -29,6 +29,7 @@ All you have to do now is cd into the directory you just created and run
 npm start
 ```
 
-## Limitations/To Do
-1. Currently Purple does not support running more than one app at a time.
-2. Client side Javascript interactivity/bundling has not yet been implemented (coming soon)
+## To Do
+1. Client side Javascript interactivity/bundling has not yet been implemented (coming soon)
+2. Custom store implementation which automatically stores the state in localStorage and loads it upon navigation
+3. Currently Purple does not support running more than one app at a time.
