@@ -9,4 +9,7 @@ async function runPurple(directory, {port=8040}) {
   console.log("+- " + magenta("Purple ") + cyan(`Server Running on Port #${green(port)}`))
 }
 
-runPurple(PURPLE_DIRECTORY, PURPLE_OPTIONS).catch(console.log)
+runPurple(PROJECT_DIRECTORY, PURPLE_OPTIONS).catch(err => {
+  console.log(err)
+  process.exit(1)
+})

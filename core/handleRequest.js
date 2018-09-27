@@ -5,6 +5,7 @@ const {join, extname, dirname} = require('path')
 const asyncHandler = require('express-async-handler')
 const mkdirp = require('mkdirp')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
+const createAppBundle = require('./functions/createAppBundle')
 
 const replaceIndexRegex = /(?<=(^|\/))index($|\/)/
 
@@ -14,7 +15,7 @@ function handleRequest(directory) {
     let path = url.parse(req.url).pathname
     const ext = extname(path)
     path = removeExtensionFromPath(path).replace(replaceIndexRegex, '')
-    if (ext && !['.html', '.jsp'].includes(ext)) return next() // We don't handle other file extensions
+    if (ext && !['.html', '.js'].includes(ext)) return next() // We don't handle other file extensions
     if (path.includes('~') || path.includes("..")) return next()
     if (!ext || ext === '.html') {
       const rawResponse = (await pageRenderer.renderHTML(path)) || null
@@ -29,9 +30,15 @@ function handleRequest(directory) {
           })
         })
       }
-    } else if (ext === '.jsp') {
+    } else if (ext === '.js') {
       // TODO: Serve Javascript to Hydrate Page
-      
+      try {
+        const result = await createAppBundle(path)
+        if (result === null) return next()
+        res.type('application/javascript').send(result)
+      } catch(err) {
+        next(err)
+      }
     }
   })
 }

@@ -1,5 +1,5 @@
 const {join} = require('path')
-const projectModules = join(process.env.PURPLE_DIRECTORY, 'node_modules/')
+const projectModules = join(process.env.PROJECT_DIRECTORY, 'node_modules/')
 const {ProvidePlugin} = require('webpack')
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
   resolve: {
     modules: [projectModules],
     alias: {
-      project: process.env.PURPLE_DIRECTORY
+      project: process.env.PROJECT_DIRECTORY
     }
   },
   plugins: [

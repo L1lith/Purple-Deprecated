@@ -1,10 +1,11 @@
 const {DefinePlugin} = require('webpack')
 const merge = require('webpack-merge')
 const {join} = require('path')
+const baseWebpackConfig = require('./webpack.config.js')
 
 const serverDir = join(__dirname, '..')
 
-module.exports = merge(require('./webpack.config.js'), {
+module.exports = merge(baseWebpackConfig, {
   target: "node",
   output: {
     path: join(__dirname, 'build')
@@ -13,8 +14,10 @@ module.exports = merge(require('./webpack.config.js'), {
   context: serverDir,
   plugins: [
     new DefinePlugin({
-        'PURPLE_DIRECTORY': `"${process.env.PURPLE_DIRECTORY}"`,
-        'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS
+        'PROJECT_DIRECTORY': `"${process.env.PROJECT_DIRECTORY}"`,
+        'PURPLE_DIRECTORY': `"${serverDir}"`,
+        'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS,
+        "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
     })
   ]
 })

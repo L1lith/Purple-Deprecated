@@ -1,8 +1,9 @@
 const autoBind = require('auto-bind')
-const {readFile, readFileSync} = require('fs-extra')
+const {readFile} = require('fs-extra')
 const {join, extname, resolve} = require('path')
 const {accessSync} = require('fs')
 const {sanitize} = require('sandhands')
+const routeOrder = require('route-order')
 const removeExtensionFromPath = require('./functions/removeExtensionFromPath')
 const {isValidElement, createElement, cloneElement} = require('react')
 const isReactComponent = require('./functions/isReactComponent')
@@ -10,6 +11,11 @@ const ReactDOMServer = require('react-dom/server')
 const {JSDOM} = require("jsdom")
 const createApp = require('./functions/createApp')
 const matchPath = require('./functions/matchPath')
+const jsRouteMap = require("./jsRouteMap")
+
+Object.entries(jsRouteMap).forEach(([route, output]) => {
+  if (!isValidElement(output) && !isReactComponent(output)) throw new Error(`Route "${route}" must export a valid React Component or Element.`)
+})
 
 class HTMLRenderer {
   constructor() {
@@ -32,11 +38,17 @@ class HTMLRenderer {
     return finalHTML
   }
   async renderJS(path) {
-    return ReactDOMServer.renderToString(createApp(path, true))
+    const paths = matchPath(path, '.js').sort(routeOrder())
+    if (paths.length < 1) return null
+    const reactElements = paths.map(path => jsRouteMap[path]).map(element => {
+      if (!isReactComponent(element)) return element
+      return createElement(element, {global: {}, serverSide: forServer === true, clientSide: forServer === false, path})
+    }).map((element, index) => cloneElement(element, {key: index}))
+    return ReactDOMServer.renderToString(createApp(reactElements, true))
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
-    if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
+    if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n    <script src="${path}.js" defer></script>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
     if (!js) {
       const dom = new JSDOM(html)
       const {document} = dom.window
@@ -59,7 +71,7 @@ class HTMLRenderer {
   injectAppHook(document, path) {
     const script = document.createElement("script")
     script.setAttribute("defer", true)
-    script.src = (path.endsWith('/') ? path + "index" : path) + ".jsp"
+    script.src = (path.endsWith('/') ? path + "index" : path) + ".js"
     document.head.appendChild(script)
   }
 }
