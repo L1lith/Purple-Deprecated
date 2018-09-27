@@ -1,7 +1,7 @@
 # Purple
 Purple is a Isomorphic React based Web Framework.
 
-##### What does this mean?
+#### What does this mean?
 
 When your browser makes a request for a webpage Purple finds your corresponding HTML files and React elements/components in the `/pages` directory. It renders all of the React elements into HTML then merges it with your HTML files to create the final HTML.
 
