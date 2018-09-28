@@ -99,6 +99,8 @@ But does not match
 /abc
 /abc.html
 ```
+## Static Files
+Purple will automatically serve all static files (css, images, whatever) that are placed under the `/static` directory. DO NOT place these resources under the `/pages` directory.
 
 ## To Do
 1. Custom store implementation which automatically stores the state in localStorage and loads it upon navigation
