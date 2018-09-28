@@ -1,5 +1,5 @@
 # Purple
-Purple is a Isomorphic React based Web Framework. Skip to [Getting Started](#getting-started)
+Purple is a Isomorphic React based Web Framework focused on High Performance. Skip to [Getting Started](#getting-started)
 
 #### What does this mean?
 
