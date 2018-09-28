@@ -22,6 +22,5 @@ module.exports = merge(baseWebpackConfig, {
         'PURPLE_OPTIONS': process.env.PURPLE_OPTIONS,
         "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
     })
-  ],
-  externals: [nodeExternals()]
+  ]
 })
