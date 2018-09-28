@@ -1,6 +1,6 @@
 {
   "name": "purple",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "High Performance Isomorphic React Framework",
   "main": "index.js",
   "scripts": {
