@@ -14,6 +14,7 @@ function handleRequest(directory) {
   return asyncHandler(async (req, res, next) => {
     let path = url.parse(req.url).pathname
     const ext = extname(path)
+    console.log(path, ',', ext)
     path = removeExtensionFromPath(path).replace(replaceIndexRegex, '')
     if (ext && !['.html', '.js'].includes(ext)) return next() // We don't handle other file extensions
     if (path.includes('~') || path.includes("..")) return next()

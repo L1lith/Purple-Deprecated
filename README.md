@@ -28,6 +28,77 @@ All you have to do now is cd into the directory you just created and run
 ```
 npm start
 ```
+## The Pages Directory
+All of your HTML and React lives under the `/pages` directory of your project. The paths of these files represents how they are rendered under the web root. To read more about these paths see the [Paths Section](#paths). All files whose file path match the request URL path will be combined to form an HTML page. All React Components/Elements will be rendered to HTML as well. Once the page loads it will request all the relevant React Components from the server and become interactive.
+
+## Paths
+Purple has its own set of unique characters which can be used on the paths of your pages files.
+| Path String | Meaning                                   |
+| :---------: |:------------------------------------------|
+| \*          | Any path (not including subpaths)         |
+| \*\+        | Any path except / (not including subpaths |
+| \*\*        | Any path (including subpaths)             |
+| \*\*\+      | Any path except / (including subpaths)    |
+
+Let's look at some examples.
+1. `/pages/index.html` This path matches
+```
+/index.html
+/
+/index
+/.html
+```
+But it does not match
+```
+/index.txt
+```
+2. `/pages/*.html` This path matches
+
+```
+/
+/index
+/index.html
+/.html
+/mystictomato.html
+```
+But it does not match
+```
+/ban/firewalldragon.html
+/helloworld/
+```
+3. `/pages/tony*.html` This page matches
+```
+/tony
+/tony.html
+/tonytiger
+/tonytiger.html
+```
+4. `/pages/*+.html` This page matches exactly the same as the second example, except it does not match
+```
+/
+```
+5. `/pages/**.html` This path matches any request with no extension or the .html extension.
+```
+/index.html
+/ice/ice/baby
+```
+6. `/pages/**+.html` This path matches exactly the same as the fifth example, except that it doesn't match
+```
+/
+```
+7. `/pages/abc/index.html` This path functions exactly the same as the first example except the path must be prefaced with `/abc/` to match. This path matches
+```
+/abc/
+/abc/index.html
+/abc/index
+```
+But does not match
+```
+/
+/index.html
+/abc
+/abc.html
+```
 
 ## To Do
 1. Custom store implementation which automatically stores the state in localStorage and loads it upon navigation
