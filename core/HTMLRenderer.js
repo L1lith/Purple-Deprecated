@@ -45,7 +45,7 @@ class HTMLRenderer {
   }
   mergeHTMLJS(html, js, path) {
     if (!html && !js) return null
-    if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n    <script src="${path}.js" defer></script>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
+    if (!html) return `<!DOCTYPE html>\n<html>\n<head>\n    <script src="${path}.js" defer="defer"></script>\n</head>\n\n<body>\n    <div id="root">${js}</div>\n</body>\n</html>`
     if (!js) {
       const dom = new JSDOM(html)
       const {document} = dom.window
@@ -67,7 +67,7 @@ class HTMLRenderer {
   }
   injectAppHook(document, path) {
     const script = document.createElement("script")
-    script.setAttribute("defer", true)
+    script.setAttribute("defer", "defer")
     script.src = (path.endsWith('/') ? path + "index" : path) + ".js"
     document.head.appendChild(script)
   }
